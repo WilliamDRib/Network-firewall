@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  caliandra:
+    build:
+      context: .
+      dockerfile: Dockerfile.caliandra
+    container_name: caliandra
+    privileged: true
+    stdin_open: true
+    tty: true
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.2
+      external_net:
+        ipv4_address: 192.168.1.2
+  caiman:
+    build:
+      context: .
+      dockerfile: Dockerfile.caiman
+    container_name: caiman
+    privileged: true
+    stdin_open: true
+    tty: true
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.3
+      internal_net:
+        ipv4_address: 192.168.3.2
+        
+  pc_interno:
+    build:
+      context: .
+      dockerfile: Dockerfile.interno
+    container_name: pc_interno
+    privileged: true
+    networks:
+      internal_net:
+        ipv4_address: 192.168.3.3
+  pc_externo:
+    build:
+      context: .
+      dockerfile: Dockerfile.externo
+    container_name: pc_externo
+    privileged: true
+    networks:
+      external_net:
+        ipv4_address: 192.168.1.3
+
+  dns:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    container_name: dns_server
+    privileged: true
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.4
+  ad:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    container_name: ad_server
+    privileged: true
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.5
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    privileged: true
+    container_name: web_server
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.6
+  bd:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    container_name: bd_server
+    privileged: true
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.7
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    container_name: app_server
+    privileged: true
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.8
+  arquivos:
+    build:
+      context: .
+      dockerfile: Dockerfile.servidor
+    container_name: arquivos_server
+    privileged: true
+    networks:
+      dmz_net:
+        ipv4_address: 192.168.2.9
+
+networks:
+  external_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+  dmz_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+  internal_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.3.0/24

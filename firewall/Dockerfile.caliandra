@@ -1,0 +1,23 @@
+# Use a imagem base do Debian
+FROM ubuntu:latest
+
+# Atualizar o sistema e instalar pacotes necessários
+RUN apt-get update && apt-get install -y \
+    iptables \
+    iproute2 \
+    net-tools \
+    iputils-ping
+
+# Script de firewall
+COPY caliandra-firewall.sh /usr/local/bin/firewall.sh
+RUN chmod +x /usr/local/bin/firewall.sh
+
+# Script de inicialização para configurar o roteamento
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Execute como root
+USER root
+
+# Executar o script na inicialização do contêiner
+ENTRYPOINT ["/entrypoint.sh"]

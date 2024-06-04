@@ -1,0 +1,22 @@
+# Use a imagem base do Alpine Linux
+FROM alpine:latest
+
+# Instalar netcat
+RUN apk add --no-cache bind-tools netcat-openbsd busybox-extras net-tools iputils-ping
+
+# Copiar o script cliente.sh para o diretório /usr/local/bin no contêiner
+COPY cliente.sh /usr/local/bin/cliente.sh
+# Definir permissões de execução para o script
+RUN chmod +x /usr/local/bin/cliente.sh
+
+# Copiar o script servico.sh para o diretório /usr/local/bin no contêiner
+COPY servico.sh /usr/local/bin/servico.sh
+# Definir permissões de execução para o script
+RUN chmod +x /usr/local/bin/servico.sh
+
+# Script de inicialização para configurar o roteamento
+COPY entrypoint-interno.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Executar o script na inicialização do contêiner
+ENTRYPOINT ["/entrypoint.sh"]
